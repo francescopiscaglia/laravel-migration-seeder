@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Train;
+use Faker\Factory as Faker;
 use Carbon\Carbon;
 
 class TrainSeeder extends Seeder
@@ -14,33 +14,20 @@ class TrainSeeder extends Seeder
      */
     public function run(): void
     {
-        Train::insert([
-            [
-                'company' => 'Trenitalia',
-                'departure_station' => 'Roma Termini',
-                'arrival_station' => 'Milano Centrale',
-                'departure_time' => Carbon::now()->addDays(1),
-                'arrival_time' => Carbon::now()->addDays(1)->addHours(3),
-                'train_code' => 'IC1234',
-                'carriages' => 12,
-                'on_time' => true,
-                'cancelled' => false,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'company' => 'Italo',
-                'departure_station' => 'Napoli Centrale',
-                'arrival_station' => 'Torino Porta Nuova',
-                'departure_time' => Carbon::now()->addDays(2),
-                'arrival_time' => Carbon::now()->addDays(2)->addHours(5),
-                'train_code' => 'IT998',
-                'carriages' => 8,
-                'on_time' => false,
-                'cancelled' => false,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        ]);
+        $faker = Faker::create();
+
+        for ($i = 0; $i < 10; $i++) { 
+            Train::create([
+                'company' => $faker->randomElement(['Trenitalia', 'Italo', 'Trenord', 'Frecciarossa']),
+                'departure_station' => $faker->city,
+                'arrival_station' => $faker->city,
+                'departure_time' => Carbon::now()->addDays(rand(1, 10))->format('Y-m-d H:i:s'),
+                'arrival_time' => Carbon::now()->addDays(rand(1, 10))->addHours(rand(1, 5))->format('Y-m-d H:i:s'),
+                'train_code' => strtoupper($faker->bothify('??###')), 
+                'carriages' => $faker->numberBetween(5, 15),
+                'on_time' => $faker->boolean(80), 
+                'cancelled' => $faker->boolean(10), 
+            ]);
+        }
     }
 }
